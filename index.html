@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+
+     <link rel="stylesheet" href="index.css"/>
+
+
+    <script src="https://kit.fontawesome.com/d3b4932f4b.js" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+
+
+    <div class="container">
+        <div class="music-player">
+            <nav>
+                <div class="circle">
+                    <i class="fa-solid fa-angle-left"></i>
+                </div>
+
+                <div class="circle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </nav>
+            
+
+
+            <img src="./images/see.jpeg" class="song-img" id="song-img">
+            <h1 id="song-title">See you again</h1>
+            <p id="song-artist">Wiz Khalifa - ft. Charlie Puth</p>
+
+            <audio id="song">
+                <source src="./media/See You Again_192(PagalWorld.com.se).mp3" type="audio/mp3" id="song-src">
+            </audio>
+            <input type="range" value="0" id="progress">
+
+
+
+            <div class="controls">
+                <div onclick="previousSong()"><i class="fa-solid fa-backward"></i></div>
+                <div onclick="playpause()"><i class="fa-solid fa-play" id="ctrlicon"></i></div>
+                <div onclick="nextSong()"><i class="fa-solid fa-forward"></i></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+
+
+        let progress = document.getElementById("progress");
+        let song = document.getElementById("song");
+        let ctrlicon = document.getElementById("ctrlicon");
+        let songImg = document.getElementById("song-img");
+        let songTitle = document.getElementById("song-title");
+        let songArtist = document.getElementById("song-artist");
+        let songSrc = document.getElementById("song-src");
+
+        
+        let songs = [
+            {
+                title: "See you again",
+                artist: "Wiz Khalifa - ft. Charlie Puth",
+                src: "./media/See You Again_192(PagalWorld.com.se).mp3",
+                img: "./images/see.jpeg"
+            },
+            {
+                title: "Streo Heart",
+                artist: "ft. Adam Levine",
+                src: "./media/Stereo Hearts_192(PagalWorld).mp3",
+                img: "./images/Stereo-2.jpg"
+            }
+            
+        ];
+
+
+
+        let currentSongIndex = 0;
+
+        function loadSong(index) {
+            let songData = songs[index];
+            songSrc.src = songData.src;
+            songImg.src = songData.img;
+            songTitle.innerText = songData.title;
+            songArtist.innerText = songData.artist;
+            song.load();
+            progress.max = song.duration;
+            progress.value = song.currentTime;
+        }
+
+
+        song.onloadedmetadata = function() {
+            progress.max = song.duration;
+            progress.value = song.currentTime;
+        };
+
+
+
+        function playpause() {
+            if (ctrlicon.classList.contains("fa-pause")) {
+                song.pause();
+                ctrlicon.classList.remove("fa-pause");
+                ctrlicon.classList.add("fa-play");
+            } else {
+                song.play();
+                ctrlicon.classList.add("fa-pause");
+                ctrlicon.classList.remove("fa-play");
+            }
+        }
+
+        if (song.play()) {
+            setInterval(() => {
+                progress.value = song.currentTime;
+            }, 500);
+        }
+
+        progress.onchange = function() {
+            song.play();
+            song.currentTime = progress.value;
+            ctrlicon.classList.add("fa-pause");
+            ctrlicon.classList.remove("fa-play");
+        };
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            song.play();
+            ctrlicon.classList.add("fa-pause");
+            ctrlicon.classList.remove("fa-play");
+        }
+
+        function previousSong() {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            loadSong(currentSongIndex);
+            song.play();
+            ctrlicon.classList.add("fa-pause");
+            ctrlicon.classList.remove("fa-play");
+        }
+
+        
+        loadSong(currentSongIndex);
+
+
+
+    </script>
+</body>
+</html>
