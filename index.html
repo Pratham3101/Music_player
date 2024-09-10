@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
 
-     <link rel="stylesheet" href="index.css"/>
-
-
+    <link rel="stylesheet" href="index.css"/>
     <script src="https://kit.fontawesome.com/d3b4932f4b.js" crossorigin="anonymous"></script>
-
-
 </head>
 <body>
 
-
+     
     <div class="container">
         <div class="music-player">
             <nav>
@@ -26,8 +22,6 @@
                     <i class="fa-solid fa-bars"></i>
                 </div>
             </nav>
-            
-
 
             <img src="./images/see.jpeg" class="song-img" id="song-img">
             <h1 id="song-title">See you again</h1>
@@ -36,9 +30,15 @@
             <audio id="song">
                 <source src="./media/See You Again_192(PagalWorld.com.se).mp3" type="audio/mp3" id="song-src">
             </audio>
+            
+            
+
+            
+            <div class="time-info">
+                <span id="current-time">0:00</span> / <span id="total-time">0:00</span>
+            </div>
+
             <input type="range" value="0" id="progress">
-
-
 
             <div class="controls">
                 <div onclick="previousSong()"><i class="fa-solid fa-backward"></i></div>
@@ -48,12 +48,7 @@
         </div>
     </div>
 
-
-
-
     <script>
-
-
         let progress = document.getElementById("progress");
         let song = document.getElementById("song");
         let ctrlicon = document.getElementById("ctrlicon");
@@ -62,7 +57,9 @@
         let songArtist = document.getElementById("song-artist");
         let songSrc = document.getElementById("song-src");
 
-        
+        let currentTimeElem = document.getElementById("current-time");
+        let totalTimeElem = document.getElementById("total-time");
+
         let songs = [
             {
                 title: "See you again",
@@ -76,10 +73,7 @@
                 src: "./media/Stereo Hearts_192(PagalWorld).mp3",
                 img: "./images/Stereo-2.jpg"
             }
-            
         ];
-
-
 
         let currentSongIndex = 0;
 
@@ -90,17 +84,25 @@
             songTitle.innerText = songData.title;
             songArtist.innerText = songData.artist;
             song.load();
-            progress.max = song.duration;
-            progress.value = song.currentTime;
         }
 
+        // Format time helper function
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
 
         song.onloadedmetadata = function() {
             progress.max = song.duration;
+            totalTimeElem.innerText = formatTime(song.duration);
             progress.value = song.currentTime;
         };
 
-
+        song.ontimeupdate = function() {
+            progress.value = song.currentTime;
+            currentTimeElem.innerText = formatTime(song.currentTime);
+        };
 
         function playpause() {
             if (ctrlicon.classList.contains("fa-pause")) {
@@ -114,14 +116,7 @@
             }
         }
 
-        if (song.play()) {
-            setInterval(() => {
-                progress.value = song.currentTime;
-            }, 500);
-        }
-
         progress.onchange = function() {
-            song.play();
             song.currentTime = progress.value;
             ctrlicon.classList.add("fa-pause");
             ctrlicon.classList.remove("fa-play");
@@ -143,11 +138,7 @@
             ctrlicon.classList.remove("fa-play");
         }
 
-        
         loadSong(currentSongIndex);
-
-
-
     </script>
 </body>
 </html>
